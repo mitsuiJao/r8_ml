@@ -121,6 +121,7 @@ def predict_poly(x, w):
         予測値
     """
 
+    # y_pred = # [TASK] Kとalphaで計算
     y_pred = x @ w
     return y_pred
 
