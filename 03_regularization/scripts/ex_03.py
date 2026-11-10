@@ -76,7 +76,8 @@ def make_vander(x, degree):
         Vandermonde 行列
     """
 
-    v = # [TASK] バンドルモンド行列を作成，np.vanderを使用
+    # v = # [TASK] バンドルモンド行列を作成，np.vanderを使用
+    v = np.vander(x, N=degree + 1, increasing=True)
     return v
 
 
@@ -96,7 +97,8 @@ def fit_poly_lstsq(x, y):
         推定された係数ベクトル
     """
 
-    w, *_ = # [TASK] 最小二乗法で多項式係数を推定，np.linalg.lstsqを使用
+    # w, *_ = # [TASK] 最小二乗法で多項式係数を推定，np.linalg.lstsqを使用
+    w, *_ = np.linalg.lstsq(x, y, rcond=None)
     return w
 
 
@@ -119,8 +121,10 @@ def fit_poly_ridge(x, y, lam=0.0):
         推定された係数ベクトル
     """
 
-    I = # [TASK] 単位行列を作成，np.eyeを使用
-    w = # [TASK] Ridge回帰で重みを計算
+    # I = # [TASK] 単位行列を作成，np.eyeを使用
+    I = np.eye(x.shape[1])
+    # w = # [TASK] Ridge回帰で重みを計算
+    w = np.linalg.inv(x.T @ x + lam * I) @ x.T @ y
     return w
 
 
@@ -139,7 +143,8 @@ def predict_poly(x, w):
     y_pred : ndarray
         予測値
     """
-    y_pred = # [TASK] 予測値を計算，xとwの内積
+    # y_pred = # [TASK] 予測値を計算，xとwの内積
+    y_pred = x @ w
     return y_pred
 
 
@@ -158,7 +163,8 @@ def mse(y_true, y_pred):
     float
         平均二乗誤差
     """
-    return # [TASK] 平均二乗誤差を計算して返す
+    # return # [TASK] 平均二乗誤差を計算して返す
+    return np.mean((y_true - y_pred) ** 2)
 
 
 def main():
@@ -166,7 +172,8 @@ def main():
     _X_train, y_train, _X_val, y_val = train_val_split(X, y, val_ratio=0.3, seed=42)
 
     # L2正則化の強さ
-    lam = # [TASK] 正則化の強さを決める
+    # lam = # [TASK] 正則化の強さを決める
+    lam = 0.02
 
     # 次数を1から20まで変化させて比較するループ
     for degree in range(1, 21):

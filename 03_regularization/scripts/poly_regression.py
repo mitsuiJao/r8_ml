@@ -145,44 +145,45 @@ def mse(y_true, y_pred):
 
 
 def main():
-    for lam in np.arange(0.0, 0.1, 0.0001):
-        print(f"{lam=:.4f}: ")
-        # lam = 0.001
-        
-        X, y, _ = make_data(n=80, noise_std=0.25, seed=0)
-        _X_train, y_train, _X_val, y_val = train_val_split(X, y, val_ratio=0.3, seed=42)
+    # for lam in np.arange(0.0, 0.1, 0.0001):
+    lam = 0.161
 
-        # 次数
-        for degree in range(1, 21):
-            # バンドルモンド行列を作成
-            X_train = make_vander(_X_train, degree)
-            X_val = make_vander(_X_val, degree)
+    print(f"{lam=:.4f}: ")
+    
+    X, y, _ = make_data(n=80, noise_std=0.25, seed=0)
+    _X_train, y_train, _X_val, y_val = train_val_split(X, y, val_ratio=0.3, seed=42)
 
-            # 学習
-            w = fit_poly_lstsq(X_train, y_train, degree, lam)
+    # 次数
+    for degree in range(1, 21):
+        # バンドルモンド行列を作成
+        X_train = make_vander(_X_train, degree)
+        X_val = make_vander(_X_val, degree)
 
-            # MSEを計算
-            train_mse = mse(y_train, predict_poly(X_train, w))
-            val_mse = mse(y_val, predict_poly(X_val, w))
+        # 学習
+        w = fit_poly_lstsq(X_train, y_train, degree, lam)
 
-            print(f"次数(Degree)={degree:2}: Train MSE={train_mse:.4f}, Val MSE={val_mse:.4f}")
+        # MSEを計算
+        train_mse = mse(y_train, predict_poly(X_train, w))
+        val_mse = mse(y_val, predict_poly(X_val, w))
 
-        # # フィット可視化
-        # _xs = np.linspace(0.0, 1.0, 400)
-        # xs = make_vander(_xs, degree)
-        # true_y = np.sin(2 * np.pi * _xs)
+        print(f"次数(Degree)={degree:2}: Train MSE={train_mse:.4f}, Val MSE={val_mse:.4f}")
 
-        # plt.figure()
-        # plt.scatter(_X_train, y_train, alpha=0.7, label='Train')
-        # plt.scatter(_X_val, y_val, alpha=0.7, label='Val')
-        # plt.plot(_xs, true_y, linewidth=2, label='True f(x) = sin(2πx)')
-        # plt.plot(_xs, predict_poly(xs, w),  linewidth=1.5, label='Predicted')
-        # plt.ylim([-1.5, 1.5])
-        # plt.xlabel('x')
-        # plt.ylabel('y')
-        # plt.legend()
-        # plt.tight_layout()
-        # plt.savefig(f'../outputs/poly_fits_deg_{degree}.png')
+        # フィット可視化
+        _xs = np.linspace(0.0, 1.0, 400)
+        xs = make_vander(_xs, degree)
+        true_y = np.sin(2 * np.pi * _xs)
+
+        plt.figure()
+        plt.scatter(_X_train, y_train, alpha=0.7, label='Train')
+        plt.scatter(_X_val, y_val, alpha=0.7, label='Val')
+        plt.plot(_xs, true_y, linewidth=2, label='True f(x) = sin(2πx)')
+        plt.plot(_xs, predict_poly(xs, w),  linewidth=1.5, label='Predicted')
+        plt.ylim([-1.5, 1.5])
+        plt.xlabel('x')
+        plt.ylabel('y')
+        plt.legend()
+        plt.tight_layout()
+        plt.savefig(f'../outputs/poly_fits_deg_{degree}.png')
 
 
 if __name__ == "__main__":
